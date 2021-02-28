@@ -19,18 +19,18 @@ func case1() {
 type employer1 struct {
 	Name     string
 	Age      int
-	Sex      *string
+	Title    *string
 	Birthday time.Time
 }
 
 //go:noinline
 func getEmployer1() employer1 {
-	sex := "man" // moved to heap: sex
+	title := "ceo" // moved to heap: title
 	bir := time.Now()
 	e := employer1{
 		Name:     "adam",
 		Age:      23,
-		Sex:      &sex,
+		Title:    &title,
 		Birthday: bir,
 	}
 	return e

@@ -18,13 +18,13 @@ func case3() {
 type employer3 struct {
 	Name     string
 	Age      int
-	Sex      *string
+	Title    *string
 	Birthday time.Time
 }
 
 //go:noinline
 func updateEmployer(emp *employer3) {
-	sex := "woman" // moved to heap: sex
+	title := "ceo" // moved to heap: title
 	emp.Name = "sara"
-	emp.Sex = &sex
+	emp.Title = &title
 }
