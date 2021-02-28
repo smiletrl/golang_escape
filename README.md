@@ -38,4 +38,6 @@ smiletrl@Rulins-MacBook-Pro escape % go build -gcflags="-m" case1.go
 
 Note: `num escapes to heap` means `num` lives out of its own function scope, which doesn't necessarily mean `num` is allocated to heap. `moved to heap: title` means variable `title` is allocated at heap.
 
+For more verbose compile result, use double `-m` as `go build -gcflags="-m -m" case1.go`.
+
 Any feedback or new prs are welcome :)
