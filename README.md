@@ -8,7 +8,7 @@ Golang uses [Escape Analysis](https://github.com/golang/go/wiki/CompilerOptimiza
 For programming, it's a good idea to keep heap memory as small as possible, since
 we want to reduce the garbage collection pressure. This repositry includes golang escapse cases and no-escape cases.
 
-Taking these cases as a guide to write efficient golang code for high performance.
+These cases could serve as a guide to write efficient golang code for high performance.
 
 Result of this repository is based on go version: `go version go1.15.8 darwin/amd64`
 
