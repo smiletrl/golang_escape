@@ -7,7 +7,7 @@ Golang uses [Escape Analysis](https://github.com/golang/go/wiki/CompilerOptimiza
 
 For programming, it's a good idea to keep heap memory as small as possible, since we want to reduce the garbage collection pressure. This repository includes golang escape examples/cases and no-escape example cases.
 
-These examples could serve as a reference to write efficient golang code for high performance, i.e, avoid writing code like escape examples.
+These examples could serve as a reference to write efficient golang code for high performance, i.e, avoid writing code like escape examples, or at least we know escaping to heap is a good trade-off for better reason if the decision is made to do the escape.
 
 Result of this repository is based on go version: `go version go1.15.8 darwin/amd64`
 

@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// Func returned struct pointer will escape.
+// Func returned struct pointer's referenced variable will escape.
 
 func case2() {
 	num := 42
