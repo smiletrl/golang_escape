@@ -6,6 +6,7 @@ import (
 )
 
 // content in slice has pointer or content value has pointer, the referenced variable escapes to heap.
+// array does not work like slice though.
 
 func case5() {
 	num := 42
@@ -38,10 +39,15 @@ func getEmployer5() int {
 		})
 	}
 
+	var employers2 []employer5
+	for k := 0; k < 100; k++ {
+		employers2 = append(employers, employer5{})
+	}
+
 	var ages [80]*int
 	age := 12 // does not escape !!!
 	for j := 0; j < 80; j++ {
 		ages[j] = &age
 	}
-	return len(names) + len(employers) + len(ages)
+	return len(names) + len(employers) + len(employers2) + len(ages)
 }
