@@ -8,4 +8,4 @@ It basically shows a pointer's value could move to heap easily if this pointer l
 
 Here we come to a good rule of thumb: <b>not use pointer unless it's really imperative to use pointer semantic</b>
 
-In this example, we see the variables moved to heap explicitly with the compile tool: `go build -gcflags="-m -l"`. In the following examples, we will see variables also moved to heap without the compiler explicitly saying so.
+In this example, we see the variables moved to heap explicitly with the compile tool: `go build -gcflags="-m -l"`. In the other examples, we will see variables also moved to heap without the compiler explicitly saying so.
