@@ -16,7 +16,7 @@ To illustrate the basic idea, [inline optimization](https://github.com/golang/go
 ### To see the escape result for each file, run commands like below
 
 ```
-cd pkg/escape
+cd pkg/example1
 go build -gcflags="-m" case1.go
 ```
 

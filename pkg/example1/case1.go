@@ -1,4 +1,4 @@
-package escape
+package examples
 
 import (
 	"fmt"
