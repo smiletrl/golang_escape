@@ -16,9 +16,3 @@ func BenchmarkCase1Slice(b *testing.B) {
 		case1Slice()
 	}
 }
-
-func BenchmarkCase1Slice2(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		case1Slice2()
-	}
-}

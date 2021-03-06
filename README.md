@@ -9,13 +9,13 @@ This repository includes golang escape examples with real code samples. These ex
 
 Result of this repository is based on go version: `go version go1.15.8 darwin/amd64`
 
-To illustrate the basic idea, [inline optimization](https://github.com/golang/go/wiki/CompilerOptimizations#function-inlining) is mostly disabled in this repository. Feel free to remove line `//go:noinline` from code and run below commands to see the difference.
+To illustrate the basic idea, [inline optimization](https://github.com/golang/go/wiki/CompilerOptimizations#function-inlining) is mostly disabled in this repository.
 
-### To see the escape result for each file, run commands like below
+### Commands to run
 
 ```
 cd pkg/example1
-go build -gcflags="-m" case1.go
+go build -gcflags="-m -l" case1.go
 ```
 
 An example result is like below:
@@ -35,7 +35,32 @@ Note: `num escapes to heap` means `num` lives out of its own function scope, whi
 
 For a more verbose compile result, use double `-m` as `go build -gcflags="-m -m -l" case1.go`.
 
-Any feedback or new prs are welcome :)
+### Project Structure
+
+```
+github.com/smiletrl/golang_escape
+|-- pkg
+|   |-- example1
+|   |   |-- README.md
+|   |   |-- case1.go
+|   |   |-- case2.go
+|   |   |-- case3.go
+|   |   |-- case4.go
+|   |   |-- case5.go
+|   |-- example2
+|   |   |-- README.md
+|   |   |-- case1.go
+|   |   |-- case1_test.go
+|   |   |-- profile001.png
+|   |-- example3
+|   |   |-- README.md
+|   |   |-- case1.go
+|   |   |-- case1_test.go
+```
+
+1. [example1](https://github.com/smiletrl/golang_escape/blob/master/pkg/example1/README.md) shows the pointer's value escaping.
+2. [example2](https://github.com/smiletrl/golang_escape/blob/master/pkg/example2/README.md) shows the `large local variable` escaping.
+3. [example3](https://github.com/smiletrl/golang_escape/blob/master/pkg/example3/README.md) shows the slice escaping.
 
 
-
+Any feedback or new contributing examples are welcome :)
