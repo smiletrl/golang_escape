@@ -7,23 +7,19 @@ import (
 
 func main() {
 	start := time.Now()
-	caseArray()
+	caseSlice()
 	fmt.Printf("druation is: %+vs\n", time.Now().Sub(start).Seconds())
 }
 
 func caseArray() {
-	var titles []string
-	emps := getemployerArray()
-	for _, emp := range emps {
-		titles = append(titles, emp.Title)
+	for i := 0; i < 100; i++ {
+		getemployerArray()
 	}
 }
 
 func caseSlice() {
-	var titles []string
-	emps := getemployerSlice()
-	for _, emp := range emps {
-		titles = append(titles, emp.Title)
+	for i := 0; i < 100; i++ {
+		getemployerSlice()
 	}
 }
 
@@ -34,7 +30,7 @@ type employer struct {
 }
 
 //go:noinline
-func getemployerArray() [1e5]employer {
+func getemployerArray() {
 	var emps [1e5]employer
 	for i := 0; i < 1e5; i++ {
 		e := employer{
@@ -44,11 +40,10 @@ func getemployerArray() [1e5]employer {
 		}
 		emps[i] = e
 	}
-	return emps
 }
 
 //go:noinline
-func getemployerSlice() []employer {
+func getemployerSlice() {
 	var emps = make([]employer, 1e5)
 	for i := 0; i < 1e5; i++ {
 		e := employer{
@@ -58,5 +53,4 @@ func getemployerSlice() []employer {
 		}
 		emps[i] = e
 	}
-	return emps
 }
