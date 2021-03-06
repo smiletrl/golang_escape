@@ -1,13 +1,11 @@
 ## Golang Escape Analysis
 
+For programming, it's a good idea to use [stack allocation](https://en.wikipedia.org/wiki/Stack-based_memory_allocation), because stack allocation is [faster](https://stackoverflow.com/questions/161053/which-is-faster-stack-allocation-or-heap-allocation) than [heap allocation](https://en.wikipedia.org/wiki/Memory_management#DYNAMIC)
+
 According to [Golang FAQ](https://golang.org/doc/faq#stack_or_heap), it's not very 
-clear when a variable will be allocated at heap.
+clear when a variable will be allocated at heap. Golang uses [Escape Analysis](https://github.com/golang/go/wiki/CompilerOptimizations#escape-analysis) to decide where a variable will be allocated.
 
-Golang uses [Escape Analysis](https://github.com/golang/go/wiki/CompilerOptimizations#escape-analysis) to decide where a variable will be allocated.
-
-For programming, it's a good idea to keep heap memory as small as possible, since we want to reduce the garbage collection pressure. This repository includes golang escape examples/cases and no-escape example cases.
-
-These examples could serve as a reference to write efficient golang code for high performance, i.e, avoid writing code like escape examples, or at least we know escaping to heap is a good trade-off for better reason if the decision is made to do the escape.
+This repository includes golang escape examples with real code samples. These examples could serve as a reference to write efficient golang code for high performance, i.e, avoid writing code like escape examples, or at least we know escaping to heap is a good trade-off for better reason if the decision is made to do the escape.
 
 Result of this repository is based on go version: `go version go1.15.8 darwin/amd64`
 
@@ -35,6 +33,9 @@ smiletrl@Rulins-MacBook-Pro escape % go build -gcflags="-m -l" case1.go
 
 Note: `num escapes to heap` means `num` lives out of its own function scope, which doesn't necessarily mean `num` is allocated to heap. `moved to heap: title` means variable `title` is allocated at heap. The parameter `-l` is to disable inline optimization.
 
-For more verbose compile result, use double `-m` as `go build -gcflags="-m -m -l" case1.go`.
+For a more verbose compile result, use double `-m` as `go build -gcflags="-m -m -l" case1.go`.
 
 Any feedback or new prs are welcome :)
+
+
+
