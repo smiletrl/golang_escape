@@ -58,10 +58,10 @@ func getemployerSlice() {
 ```
  
 Run above command `go test -bench=. -benchmem` again, and this time, we will see slice always gets allocated to heap even with length `1`.
- 
+
 ## Conclusion
- 
-1. When a slice is used with `append`, this slice may dynamically grow pretty large, which is not identical to an array with a fixed size. So it's reasonable to allocate the slice variable to [heap - dynamic memory allocation](https://en.wikipedia.org/wiki/Memory_management#DYNAMIC).
+
+1. When a slice is used with `append`, slice variable is always being allocated to [heap - dynamic memory allocation](https://en.wikipedia.org/wiki/Memory_management#DYNAMIC). We might cover the reason in a separate topic.
  
 2. When a slice is not using `append`, it will be determined by its size.
 a. If the size is small, then it will be allocated to stack.
@@ -69,14 +69,14 @@ b. If the size is large, then it will be allocated to the heap.
 c. With the same size as the array, slice has more chance to be allocated to heap. This comes to a similar question in example 2, how `large` is large. We will cover this in another topic.
 
 ## Run GC command
- 
+
 To verify the variable is really allocated to heap, we might also run gc debug command, like this
  
 ```
 smiletrl@Rulins-MacBook-Pro example3 % go build .                   
 smiletrl@Rulins-MacBook-Pro example3 % GODEBUG="gctrace=1" ./example3
 ```
- 
+
 If we see results like below, it means new memory from the heap is being garbage collected. If we see nothing like below, it means no memory has been allocated to heap. For more details, visit [Golang GC](https://github.com/smiletrl/golang_gc/tree/master/cmd/example1).
  
 ```
@@ -97,3 +97,7 @@ func main() {
 }
  
 ```
+
+## More testing with `append`
+
+Try to write the benchmark test with `append` vs direct value assignment. See which one gets better. It's out of this project's scope, so play with it if you are interested ^.
