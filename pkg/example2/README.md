@@ -18,9 +18,9 @@ We see only line 60 `moved to heap: emps` from compiler's output, but line 46 `v
 
 But how `large` is large? In this example, `var emps [1e5]employer1` size is `4MB = (40 Byte * 1e5)`, and `var emps [1e6]employer1` size is `40MB = (40 Byte * 1e6)`. So `40MB` is large enough for Golang to move this variable to heap instead of stack. We will not cover the internal implementation of how golang makes the decision, which probably deserves a separate topic to talk.
 
-## How to get the variable size?
+## How to get the variable memory size?
 
-In this example, we see the variable size matters for whether it will be allocated to heap. This example provides a few options to get variable size.
+In this example, we see the variable memory size matters for whether it will be allocated to heap. This example provides a few options to get variable size.
 
 To get this variable `var emps [1e5]employer1` size, each struct `employer` contains 2 string fields, and one int field. In my machine (mac amd64), each string is `16 Byte`, and int is `8 Byte`, which gives the total size of one `employer` struct to be 40 Byte.
 
@@ -47,7 +47,15 @@ BenchmarkCase1Array-16     	    1280	    952224 ns/op	       0 B/op	       0 all
 BenchmarkCase1Array2-16    	      25	  49134560 ns/op	40001616 B/op	       1 allocs/op
 ```
 
-See [Benchmark result](https://golang.org/pkg/testing/#BenchmarkResult) for meaning. We are interested at `40001616 B/op`, which is returned from [AllocedBytesPerOp](https://golang.org/pkg/testing/#BenchmarkResult.AllocedBytesPerOp). In this case, we see the size of `[1e6]employer1` (maybe plus the allocation of `i`) is `40001616 Byte ~= 40 MB`.
+See [Benchmark result](https://golang.org/pkg/testing/#BenchmarkResult) for meaning. We are interested at `40001616 B/op`, which is returned from [AllocedBytesPerOp](https://golang.org/pkg/testing/#BenchmarkResult.AllocedBytesPerOp). In this case, we see the size of `[1e6]employer1` is `40001616 Byte ~= 40 MB`. `var emps [1e5]employer1` is not allocated at heap, so its result is empty.
 
+To add [pprof profile](https://golang.org/pkg/runtime/pprof/) support, run command
 
+```
+smiletrl@Rulins-MacBook-Pro example2 % go test -bench BenchmarkCase1Array2 -benchmem -memprofile memprofile.out
+smiletrl@Rulins-MacBook-Pro example2 % go tool pprof memprofile.out
+```
 
+To avoid confusion, the above test command only runs `BenchmarkCase1Array2`.
+
+This profile `memprofile.out` shows memory allocated from `getEmployer1Array2()` to heap, i.e, this variable `var emps [1e6]employer1`, and then we may [play with this output profile](https://blog.golang.org/pprof). This repository includes one png format of this memory profile as `profile001.png`. It shows 38.15 MB. Note, [pprof uses MiB](https://github.com/google/pprof/issues/136) as measurement. To do the conversion, we get `38.15MiB ~= 40 MB`, which is consistent with the above `40MB` result.

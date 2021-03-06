@@ -13,6 +13,6 @@ func BenchmarkCase1Array(b *testing.B) {
 
 func BenchmarkCase1Array2(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		getEmployer1Array3()
+		getEmployer1Array2()
 	}
 }

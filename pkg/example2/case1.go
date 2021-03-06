@@ -53,15 +53,3 @@ func getEmployer1Array2() [1e6]employer1 {
 	}
 	return emps
 }
-
-//go:noinline
-func getEmployer1Array3() {
-	var emps [1e6]employer1 //moved to heap: emps
-	for i := 0; i < 1e6; i++ {
-		emps[i] = employer1{
-			Name:  "adam",
-			Age:   23,
-			Title: "ceo",
-		}
-	}
-}
