@@ -1,6 +1,6 @@
 ## Example Description
 
-This is an example of pointer's content escaped to heap.
+This is an example of pointer's content escaping to heap.
 
 case 1-5 demonstrates pointers' referenced variables escaping from their own function scope, and then got allocated to heap.
 

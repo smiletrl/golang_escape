@@ -2,8 +2,14 @@ package main
 
 import (
 	"fmt"
-	"unsafe"
+	"time"
 )
+
+func main() {
+	start := time.Now()
+	case1Array()
+	fmt.Printf("druation is: %+vs\n", time.Now().Sub(start).Seconds())
+}
 
 func case1Array() {
 	var titles []string
@@ -13,10 +19,17 @@ func case1Array() {
 	}
 }
 
-func case1Array1() {
+func case1Slice() {
 	var titles []string
-	emps := getEmployer1Array2()
-	fmt.Printf("emp size is: %+v\n", unsafe.Sizeof(emps))
+	emps := getEmployer1Slice()
+	for _, emp := range emps {
+		titles = append(titles, emp.Title)
+	}
+}
+
+func case1Slice2() {
+	var titles []string
+	emps := getEmployer1Slice2()
 	for _, emp := range emps {
 		titles = append(titles, emp.Title)
 	}
@@ -32,11 +45,12 @@ type employer1 struct {
 func getEmployer1Array() [1e5]employer1 {
 	var emps [1e5]employer1
 	for i := 0; i < 1e5; i++ {
-		emps[i] = employer1{
+		e := employer1{
 			Name:  "adam",
 			Age:   23,
 			Title: "ceo",
 		}
+		emps[i] = e
 	}
 	return emps
 }
@@ -45,23 +59,40 @@ func getEmployer1Array() [1e5]employer1 {
 func getEmployer1Array2() [1e6]employer1 {
 	var emps [1e6]employer1 //moved to heap: emps
 	for i := 0; i < 1e6; i++ {
-		emps[i] = employer1{
+		e := employer1{
 			Name:  "adam",
 			Age:   23,
 			Title: "ceo",
 		}
+		emps[i] = e
 	}
 	return emps
 }
 
 //go:noinline
-func getEmployer1Array3() {
-	var emps [1e6]employer1 //moved to heap: emps
-	for i := 0; i < 1e6; i++ {
-		emps[i] = employer1{
+func getEmployer1Slice() []employer1 {
+	var emps = make([]employer1, 1e5)
+	for i := 0; i < 1e5; i++ {
+		e := employer1{
 			Name:  "adam",
 			Age:   23,
 			Title: "ceo",
 		}
+		emps[i] = e
 	}
+	return emps
+}
+
+//go:noinline
+func getEmployer1Slice2() []employer1 {
+	var emps = make([]employer1, 1e5)
+	for i := 0; i < 1e5; i++ {
+		e := employer1{
+			Name:  "adam",
+			Age:   23,
+			Title: "ceo",
+		}
+		emps = append(emps, e)
+	}
+	return emps
 }
