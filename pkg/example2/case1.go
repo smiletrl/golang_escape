@@ -1,27 +1,5 @@
 package example2
 
-import (
-	"fmt"
-	"unsafe"
-)
-
-func case1Array() {
-	var titles []string
-	emps := getEmployer1Array()
-	for _, emp := range emps {
-		titles = append(titles, emp.Title)
-	}
-}
-
-func case1Array1() {
-	var titles []string
-	emps := getEmployer1Array2()
-	fmt.Printf("emp size is: %+v\n", unsafe.Sizeof(emps))
-	for _, emp := range emps {
-		titles = append(titles, emp.Title)
-	}
-}
-
 type employer1 struct {
 	Name  string
 	Age   int
