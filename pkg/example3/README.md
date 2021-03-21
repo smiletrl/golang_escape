@@ -1,103 +1,90 @@
 ## Example Description
  
-This is an example of [`slice`](https://blog.golang.org/slices) escaping to heap.
- 
-Looking at the code, both `var emps [1e5]employer` and `var emps = make([]employer, 1e5)` are local variables, and they are not used in func return either. The difference is the first one being array, while the second one being slice.
- 
-In example 2, we know array size `1e5` for `var emps [1e5]employer` is allocated at stack. This example will see how slice behaves.
- 
-Run command, and result is like:
- 
+This is an example of variable escaping to heap without escape analysis explicitly saying so.
+
+Run escape analysis command:
+
 ```
-smiletrl@Rulins-MacBook-Pro example3 % go test -bench=. -benchmem
-goos: darwin
-goarch: amd64
+smiletrl@Rulins-MacBook-Pro example3 % go build -gcflags="-m -l" case.go
+# command-line-arguments
+./case.go:11:17: make([]employer, 10) does not escape
+```
+
+Above command doesn't indicate any variable escaping to heap.
+
+Now run the benchmark memory test:
+
+```
 pkg: github.com/smiletrl/golang_escape/pkg/example3
-BenchmarkCase1Array-16           501       2336946 ns/op           0 B/op          0 allocs/op
-BenchmarkCase1Slice-16             4     267056822 ns/op    400589504 B/op       111 allocs/op
+cpu: Intel(R) Core(TM) i9-9980HK CPU @ 2.40GHz
+BenchmarkSlice1-16    	276773486	         4.747 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSlice2-16    	17964181	        60.60 ns/op	      48 B/op	       1 allocs/op
+PASS
+ok  	github.com/smiletrl/golang_escape/pkg/example3	2.978s
 ```
- 
-We will see no memory for `caseArray()` is allocated at heap, but `caseSlice()` does allocate variable `var emps = make([]employer, 1e5)` to heap for 101 times during each operation.
- 
-Slice itself includes [one pointer to the array content](https://golang.org/pkg/reflect/#SliceHeader), kind of similar to the string we discussed at example 2. In this case, slice size should include the backed array's size and itself (24 Bytes for 3 `int` type from the `SliceHeader` struct). Basically, this slice size `var emps = make([]employer, 1e3)` is relatively the same as array `var emps [1e5]employer`.
- 
-Now try to change the slice length from `1e5` to `1e4` and `1e3` for slice `var emps = make([]employer, 1e5)`.
- 
+
+It indicates one heap allocation for `getemployerSlice2()`. And the allocated memory is 48Byte.
+
+We could look at the assumbly language for this code, and explore why.
+
 ```
-//go:noinlinex
-func getemployerSlice() {
-   var emps = make([]employer, 1e3)
-   for i := 0; i < 1e3; i++ {
-       e := employer{
-           Name:  "adam",
-           Age:   23,
-           Title: "ceo",
-       }
-       emps[i] = e
-   }
-}
+smiletrl@Rulins-MacBook-Pro example3 % go tool compile -S case.go
+"".getemployerSlice1 STEXT nosplit size=14 args=0x0 locals=0x0 funcid=0x0
+	0x0000 00000 (case.go:10)	TEXT	"".getemployerSlice1(SB), NOSPLIT|ABIInternal, $0-0
+	0x0000 00000 (case.go:10)	FUNCDATA	$0, gclocals·33cdeccccebe80329f1fdbee7f5874cb(SB)
+	0x0000 00000 (case.go:10)	FUNCDATA	$1, gclocals·33cdeccccebe80329f1fdbee7f5874cb(SB)
+	0x0000 00000 (case.go:10)	XORL	AX, AX
+	0x0002 00002 (case.go:12)	JMP	7
+	0x0004 00004 (case.go:12)	INCQ	AX
+	0x0007 00007 (case.go:12)	CMPQ	AX, $10
+	0x000b 00011 (case.go:12)	JLT	4
+	0x000d 00013 (case.go:12)	RET
+	0x0000 31 c0 eb 03 48 ff c0 48 83 f8 0a 7c f7 c3        1...H..H...|..
+"".getemployerSlice2 STEXT size=241 args=0x0 locals=0x70 funcid=0x0
+	0x0000 00000 (case.go:23)	TEXT	"".getemployerSlice2(SB), ABIInternal, $112-0
+	0x0000 00000 (case.go:23)	MOVQ	(TLS), CX
+	0x0009 00009 (case.go:23)	CMPQ	SP, 16(CX)
+	0x000d 00013 (case.go:23)	PCDATA	$0, $-2
+	0x000d 00013 (case.go:23)	JLS	231
+	0x0013 00019 (case.go:23)	PCDATA	$0, $-1
+	0x0013 00019 (case.go:23)	SUBQ	$112, SP
+	0x0017 00023 (case.go:23)	MOVQ	BP, 104(SP)
+	0x001c 00028 (case.go:23)	LEAQ	104(SP), BP
+	0x0021 00033 (case.go:23)	FUNCDATA	$0, gclocals·69c1753bd5f81501d95132d08af04464(SB)
+	0x0021 00033 (case.go:23)	FUNCDATA	$1, gclocals·edcc1c706859af29673c95fedcaaa670(SB)
+	0x0021 00033 (case.go:25)	MOVQ	$0, "".e+64(SP)
+	0x002a 00042 (case.go:25)	XORPS	X0, X0
+	0x002d 00045 (case.go:25)	MOVUPS	X0, "".e+72(SP)
+	0x0032 00050 (case.go:25)	MOVUPS	X0, "".e+88(SP)
+	0x0037 00055 (case.go:26)	LEAQ	go.string."adam"(SB), AX
+	0x003e 00062 (case.go:26)	MOVQ	AX, "".e+64(SP)
+	0x0043 00067 (case.go:26)	MOVQ	$4, "".e+72(SP)
+	0x004c 00076 (case.go:27)	MOVQ	$23, "".e+80(SP)
+	0x0055 00085 (case.go:28)	LEAQ	go.string."ceo"(SB), AX
+	0x005c 00092 (case.go:28)	MOVQ	AX, "".e+88(SP)
+	0x0061 00097 (case.go:28)	MOVQ	$3, "".e+96(SP)
+	0x006a 00106 (case.go:30)	LEAQ	type."".employer(SB), AX
+	0x0071 00113 (case.go:30)	MOVQ	AX, (SP)
+	0x0075 00117 (case.go:30)	MOVUPS	X0, 8(SP)
+	0x007a 00122 (case.go:30)	MOVQ	$0, 24(SP)
+	0x0083 00131 (case.go:30)	MOVQ	$1, 32(SP)
+	0x008c 00140 (case.go:30)	PCDATA	$1, $1
+	0x008c 00140 (case.go:30)	CALL	runtime.growslice(SB)
+	0x0091 00145 (case.go:30)	MOVQ	40(SP), AX
+	0x0096 00150 (case.go:30)	PCDATA	$0, $-2
+	0x0096 00150 (case.go:30)	CMPL	runtime.writeBarrier(SB), $0
+    ...
 ```
- 
-Run above command `go test -bench=. -benchmem` again, and we will see slice gets allocated to stack again with `1e3`.
- 
-Now try to change the slice value assignment to `append`, and change the slice length to `1` in the loop.
- 
-```
-//go:noinline
-func getemployerSlice() {
-   var emps = make([]employer, 1)
-   for i := 0; i < 1; i++ {
-       e := employer{
-           Name:  "adam",
-           Age:   23,
-           Title: "ceo",
-       }
-       emps = append(emps, e)
-   }
-}
-```
- 
-Run above command `go test -bench=. -benchmem` again, and this time, we will see slice always gets allocated to heap even with length `1`.
+
+The interesting line is `0x008c 00140 (case.go:30)	CALL	runtime.growslice(SB)`. It means `append()` has tried to grow the slice.
+
+Line 24 has declared one empty slice with length & capacity to be zero. Line 30 is going to expand the slice length to hold the new slice content at line 25. So [`runtime.growslice`](https://github.com/golang/go/blob/release-branch.go1.16/src/runtime/slice.go#L125) has been called. This function then invokes [`mallocgc`](https://github.com/golang/go/blob/f39c4deee812b577ffb84b78e62ce4392d2baeb1/src/runtime/malloc.go#L905), which will make heap allocation.
+
+You may find more append details at [this great blog](https://blog.golang.org/slices-intro) and [Effective go](https://golang.org/doc/effective_go#slices).
 
 ## Conclusion
 
-1. When a slice is used with `append`, slice variable is always being allocated to [heap - dynamic memory allocation](https://en.wikipedia.org/wiki/Memory_management#DYNAMIC). We might cover the reason in a separate topic.
- 
-2. When a slice is not using `append`, it will be determined by its size.
-a. If the size is small, then it will be allocated to stack.
-b. If the size is large, then it will be allocated to the heap.
-c. With the same size as the array, slice has more chance to be allocated to heap. This comes to a similar question in example 2, how `large` is large. We will cover this in another topic.
+Heap allocation might happen when escape analysis has given up `analysis`. Citing from [randall77](https://github.com/randall77)
 
-## Run GC command
-
-To verify the variable is really allocated to heap, we might also run gc debug command, like this
- 
-```
-smiletrl@Rulins-MacBook-Pro example3 % go build .                   
-smiletrl@Rulins-MacBook-Pro example3 % GODEBUG="gctrace=1" ./example3
-```
-
-If we see results like below, it means new memory from the heap is being garbage collected. If we see nothing like below, it means no memory has been allocated to heap. For more details, visit [Golang GC](https://github.com/smiletrl/golang_gc/tree/master/cmd/example1).
- 
-```
-gc 1 @0.004s 0%: 0.012+0.19+0.019 ms clock, 0.19+0.079/0.13/0.10+0.31 ms cpu, 4->4->0 MB, 5 MB goal, 16 P
-gc 2 @0.007s 1%: 0.009+0.19+0.021 ms clock, 0.15+0.060/0.052/0.15+0.34 ms cpu, 4->4->0 MB, 5 MB goal, 16 P
-...
-```
- 
-Play with this command using different slice length, and `append`. See if we can get the consistent result like command `go test -bench=. -benchmem` does.
- 
-Try to change `main()` code from invoking slice to array, like below. Run the gc debug command again to verify the array variable is really not being allocated to heap.
- 
-```
-func main() {
-   start := time.Now()
-   caseArray()
-   fmt.Printf("druation is: %+vs\n", time.Now().Sub(start).Seconds())
-}
- 
-```
-
-## More testing with `append`
-
-Try to write the benchmark test with `append` vs direct value assignment. See which one gets better. It's out of this project's scope, so play with it if you are interested ^.
+> Escape analysis is only concerned with flow of data. emps does not escape here, it only flows to itself.
+There's a related but distinct question of heap allocation vs. stack allocation. Generally to stack allocate a variable, it needs to not escape and have a size known at compile time. The allocation that happens here (in growslice) fails the second test, not the first.

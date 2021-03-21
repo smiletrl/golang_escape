@@ -22,14 +22,6 @@ To get this variable `var emps [1e5]employer1` size, each struct `employer` cont
 
 One thing is this size `16 Byte` for string is simply the [`string header struct`](https://golang.org/pkg/reflect/#StringHeader) size, which is a result of [unsafe.Sizeof](https://golang.org/pkg/unsafe/#Sizeof). See `The size does not include any memory possibly referenced by x` from `Sizeof` doc. `String` in golang is actually a reference type (`Data uintptr` from string header struct is a pointer to the real byte data).
 
-To get the `real` memory (i.e, including the pointed value's memory) allocated to the string variable, we can do
-
-```
-stringSize := len(str) + unsafe.Sizeof(str)
-```
-
-`len(str)` will return the byte length of the pointed value from the string `str`.
-
 Another option to get the size of a variable is to use the built in benchmark tool
 
 Run below command:
@@ -55,3 +47,7 @@ smiletrl@Rulins-MacBook-Pro example2 % go tool pprof memprofile.out
 To avoid confusion, the above test command only runs `BenchmarkCase1Array2`.
 
 This profile `memprofile.out` shows memory allocated from `getEmployer1Array2()` to heap, i.e, this variable `var emps [1e6]employer1`, and then we may [play with this output profile](https://blog.golang.org/pprof). This repository includes one png format of this memory profile as `profile001.png`. It shows 38.15 MB. Note, [pprof uses MiB](https://github.com/google/pprof/issues/136) as measurement. To do the conversion, we get `38.15MiB ~= 40 MB`, which is consistent with the above `40MB` result.
+
+## Conclusion
+
+If the local variable is pretty large, then the local variable will have a great chance of being allocated to heap. For the concrete size value, check this [large variable escape post](https://smiletrl.github.io/post/golang-local-large-heap-allocated-variable/).
