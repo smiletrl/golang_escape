@@ -25,13 +25,14 @@ github.com/smiletrl/golang_escape
 |   |   |-- case5.go
 |   |-- example2
 |   |   |-- README.md
-|   |   |-- case1.go
-|   |   |-- case1_test.go
+|   |   |-- case.go
+|   |   |-- case_test.go
 |   |   |-- profile001.png
 |   |-- example3
 |   |   |-- README.md
 |   |   |-- case.go
 |   |   |-- case_test.go
+|-- README.md
 ```
 
 1. [example1](https://github.com/smiletrl/golang_escape/blob/master/pkg/example1/README.md) shows the pointer's referenced value escaping.
