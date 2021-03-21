@@ -18,7 +18,7 @@ But how `large` is large? In this example, `var emps [1e5]employer` size is `4MB
 
 In this example, we see the variable memory size matters for whether it will be allocated to heap. This example provides three options to get variable size.
 
-1. To get this variable `var emps [1e5]employer` size, each struct `employer` contains 2 string fields, and one int field. In my machine (mac amd64), each string is `16 Byte`, and int is `8 Byte`, which gives the total size of one `employer` struct to be 40 Byte. This could be retrieved from [unsafe.Sizeof](https://golang.org/pkg/unsafe/#Sizeof).
+1. To get this variable `var emps [1e6]employer` size, each struct `employer` contains 2 string fields, and one int field. In my machine (mac amd64), each string is `16 Byte`, and int is `8 Byte`, which gives the total size of one `employer` struct to be 40 Byte. This could be retrieved from [unsafe.Sizeof](https://golang.org/pkg/unsafe/#Sizeof). Then the final size will be `40MB = (40 Byte * 1e6)`.
 
 One thing is this size `16 Byte` for string is simply the [`string header struct`](https://golang.org/pkg/reflect/#StringHeader) size, which is a result of [unsafe.Sizeof](https://golang.org/pkg/unsafe/#Sizeof). See `The size does not include any memory possibly referenced by x` from `Sizeof` doc. `String` in golang is actually a reference type (`Data uintptr` from string header struct is a pointer to the real byte data).
 
