@@ -1,16 +1,16 @@
 package example2
 
-type employer1 struct {
+type employer struct {
 	Name  string
 	Age   int
 	Title string
 }
 
 //go:noinline
-func getEmployer1Array() [1e5]employer1 {
-	var emps [1e5]employer1
+func getEmployerArray1() [1e5]employer {
+	var emps [1e5]employer
 	for i := 0; i < 1e5; i++ {
-		emps[i] = employer1{
+		emps[i] = employer{
 			Name:  "adam",
 			Age:   23,
 			Title: "ceo",
@@ -20,10 +20,10 @@ func getEmployer1Array() [1e5]employer1 {
 }
 
 //go:noinline
-func getEmployer1Array2() [1e6]employer1 {
-	var emps [1e6]employer1 //moved to heap: emps
+func getEmployerArray2() [1e6]employer {
+	var emps [1e6]employer //moved to heap: emps
 	for i := 0; i < 1e6; i++ {
-		emps[i] = employer1{
+		emps[i] = employer{
 			Name:  "adam",
 			Age:   23,
 			Title: "ceo",

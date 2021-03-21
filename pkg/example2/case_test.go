@@ -5,14 +5,14 @@ import (
 )
 
 // go test -bench=.
-func BenchmarkCase1Array(b *testing.B) {
+func BenchmarkCaseArray1(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		getEmployer1Array()
+		getEmployerArray1()
 	}
 }
 
-func BenchmarkCase1Array2(b *testing.B) {
+func BenchmarkCaseArray2(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		getEmployer1Array2()
+		getEmployerArray2()
 	}
 }
