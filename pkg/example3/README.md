@@ -1,6 +1,6 @@
 ## Example Description
  
-This is an example of variable escaping to heap without escape analysis explicitly saying so.
+This is an example of variable being allocated to heap without escape analysis explicitly saying so.
 
 Run escape analysis command:
 

@@ -37,7 +37,8 @@ github.com/smiletrl/golang_escape
 
 1. [example1](https://github.com/smiletrl/golang_escape/blob/master/pkg/example1/README.md) shows the pointer's referenced value escaping.
 2. [example2](https://github.com/smiletrl/golang_escape/blob/master/pkg/example2/README.md) shows the `large local variable` escaping.
-3. [example3](https://github.com/smiletrl/golang_escape/blob/master/pkg/example3/README.md) shows a dynamic escaping in runtime.
+3. [example3](https://github.com/smiletrl/golang_escape/blob/master/pkg/example3/README.md) shows variable being allocated to heap without escape analysis explicitly saying so.
+4. @todo, add example when variable is allocated at stack, but escape analysis says it escapes to heap.
 
 ### Commands to run
 
