@@ -15,6 +15,9 @@ Above command doesn't indicate any variable escaping to heap.
 Now run the benchmark memory test:
 
 ```
+smiletrl@Rulins-MacBook-Pro example3 % go test -bench=. -benchmem
+goos: darwin
+goarch: amd64
 pkg: github.com/smiletrl/golang_escape/pkg/example3
 cpu: Intel(R) Core(TM) i9-9980HK CPU @ 2.40GHz
 BenchmarkSlice1-16    	276773486	         4.747 ns/op	       0 B/op	       0 allocs/op
